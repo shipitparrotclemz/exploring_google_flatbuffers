@@ -73,7 +73,7 @@ Step 1: Download the `flatc` command line compiler
 Source: How to install flatc and flatbuffers on linux ubuntu
 - https://stackoverflow.com/a/55394568
 
-Step 2: Compile the schema 
+Step 2: Compile the schema into a CPP header file
 
 cd back to the root of this directory.
 
