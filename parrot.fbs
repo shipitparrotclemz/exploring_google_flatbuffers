@@ -1,0 +1,25 @@
+namespace Parrot;
+
+attribute "priority";
+
+enum Color: byte { Red = 1, Green = 2, Blue = 3 }
+
+struct Position {
+    x: float;
+    y: float;
+    z: float;
+}
+
+table Talent {
+    name: string;
+    level: short;
+}
+
+table Parrot {
+    position: Position;
+    name: string;
+    color: Color;
+    talents: [Talent];
+}
+
+root_type Parrot;
