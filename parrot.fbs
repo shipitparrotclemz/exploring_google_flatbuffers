@@ -4,6 +4,8 @@ attribute "priority";
 
 enum Color: byte { Red = 1, Green = 2, Blue = 3 }
 
+enum Level: byte { One = 1, Two = 2, Three = 3, Four = 4, Five = 5 }
+
 struct Position {
     x: float;
     y: float;
@@ -12,7 +14,7 @@ struct Position {
 
 table Talent {
     name: string;
-    level: short;
+    level: Level;
 }
 
 table Parrot {
