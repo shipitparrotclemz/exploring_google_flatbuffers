@@ -3,6 +3,9 @@
 #include "generated_parrot/parrot_generated.h"
 
 int main() {
+    /**
+     * Q: How do we create a FlatBuffer object?
+     */
     flatbuffers::FlatBufferBuilder builder;
 
     // Create Position
