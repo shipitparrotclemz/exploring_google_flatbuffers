@@ -1,18 +1,28 @@
 namespace Parrot;
 
+// Possible Color for a Parrot
 enum Color: byte { Red = 0, Green = 1, Blue = 2 }
 
+// Levels for a Parrot's talents
 enum Level: byte { One = 0, Two = 1, Three = 2, Four = 3, Five = 4 }
 
+// 3D position of a parrot
 struct Position {
     x: float;
     y: float;
     z: float;
 }
 
+// A parrot's talent with a name and level
 table Talent {
     name: string;
     level: Level;
+}
+
+// Union type for future extensibility; we can add more types to this union
+// This allows us to extend the Parrot table with additional information in the future
+union ParrotData {
+    Talent
 }
 
 table Parrot {
@@ -20,6 +30,7 @@ table Parrot {
     name: string;
     color: Color;
     talents: [Talent];
+    data: ParrotData;
 }
 
 root_type Parrot;
