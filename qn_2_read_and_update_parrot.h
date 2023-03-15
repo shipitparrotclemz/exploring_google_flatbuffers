@@ -1,0 +1,14 @@
+//
+// Created by Goh Chang Ming Clement on 3/15/23.
+//
+
+#ifndef CRYPTODOTCOMASSIGNMENT_QN_2_READ_AND_UPDATE_PARROT_H
+#define CRYPTODOTCOMASSIGNMENT_QN_2_READ_AND_UPDATE_PARROT_H
+
+
+class qn_2_read_and_update_parrot {
+
+};
+
+
+#endif //CRYPTODOTCOMASSIGNMENT_QN_2_READ_AND_UPDATE_PARROT_H
