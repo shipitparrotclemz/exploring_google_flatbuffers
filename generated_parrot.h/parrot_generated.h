@@ -95,6 +95,47 @@ inline const char *EnumNameLevel(Level e) {
   return EnumNamesLevel()[index];
 }
 
+enum class ParrotData : uint8_t {
+  NONE = 0,
+  Talent = 1,
+  MIN = NONE,
+  MAX = Talent
+};
+
+inline const ParrotData (&EnumValuesParrotData())[2] {
+  static const ParrotData values[] = {
+    ParrotData::NONE,
+    ParrotData::Talent
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesParrotData() {
+  static const char * const names[3] = {
+    "NONE",
+    "Talent",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameParrotData(ParrotData e) {
+  if (::flatbuffers::IsOutRange(e, ParrotData::NONE, ParrotData::Talent)) return "";
+  const size_t index = static_cast<size_t>(e);
+  return EnumNamesParrotData()[index];
+}
+
+template<typename T> struct ParrotDataTraits {
+  static const ParrotData enum_value = ParrotData::NONE;
+};
+
+template<> struct ParrotDataTraits<Parrot::Talent> {
+  static const ParrotData enum_value = ParrotData::Talent;
+};
+
+bool VerifyParrotData(::flatbuffers::Verifier &verifier, const void *obj, ParrotData type);
+bool VerifyParrotDataVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<ParrotData> *types);
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Position FLATBUFFERS_FINAL_CLASS {
  private:
   float x_;
@@ -205,7 +246,9 @@ struct Parrot FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
     VT_POSITION = 4,
     VT_NAME = 6,
     VT_COLOR = 8,
-    VT_TALENTS = 10
+    VT_TALENTS = 10,
+    VT_DATA_TYPE = 12,
+    VT_DATA = 14
   };
   const Parrot::Position *position() const {
     return GetStruct<const Parrot::Position *>(VT_POSITION);
@@ -219,6 +262,16 @@ struct Parrot FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   const ::flatbuffers::Vector<::flatbuffers::Offset<Parrot::Talent>> *talents() const {
     return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<Parrot::Talent>> *>(VT_TALENTS);
   }
+  Parrot::ParrotData data_type() const {
+    return static_cast<Parrot::ParrotData>(GetField<uint8_t>(VT_DATA_TYPE, 0));
+  }
+  const void *data() const {
+    return GetPointer<const void *>(VT_DATA);
+  }
+  template<typename T> const T *data_as() const;
+  const Parrot::Talent *data_as_Talent() const {
+    return data_type() == Parrot::ParrotData::Talent ? static_cast<const Parrot::Talent *>(data()) : nullptr;
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<Parrot::Position>(verifier, VT_POSITION, 4) &&
@@ -228,9 +281,16 @@ struct Parrot FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
            VerifyOffset(verifier, VT_TALENTS) &&
            verifier.VerifyVector(talents()) &&
            verifier.VerifyVectorOfTables(talents()) &&
+           VerifyField<uint8_t>(verifier, VT_DATA_TYPE, 1) &&
+           VerifyOffset(verifier, VT_DATA) &&
+           VerifyParrotData(verifier, data(), data_type()) &&
            verifier.EndTable();
   }
 };
+
+template<> inline const Parrot::Talent *Parrot::data_as<Parrot::Talent>() const {
+  return data_as_Talent();
+}
 
 struct ParrotBuilder {
   typedef Parrot Table;
@@ -248,6 +308,12 @@ struct ParrotBuilder {
   void add_talents(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<Parrot::Talent>>> talents) {
     fbb_.AddOffset(Parrot::VT_TALENTS, talents);
   }
+  void add_data_type(Parrot::ParrotData data_type) {
+    fbb_.AddElement<uint8_t>(Parrot::VT_DATA_TYPE, static_cast<uint8_t>(data_type), 0);
+  }
+  void add_data(::flatbuffers::Offset<void> data) {
+    fbb_.AddOffset(Parrot::VT_DATA, data);
+  }
   explicit ParrotBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -264,11 +330,15 @@ inline ::flatbuffers::Offset<Parrot> CreateParrot(
     const Parrot::Position *position = nullptr,
     ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     Parrot::Color color = Parrot::Color::Red,
-    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<Parrot::Talent>>> talents = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<Parrot::Talent>>> talents = 0,
+    Parrot::ParrotData data_type = Parrot::ParrotData::NONE,
+    ::flatbuffers::Offset<void> data = 0) {
   ParrotBuilder builder_(_fbb);
+  builder_.add_data(data);
   builder_.add_talents(talents);
   builder_.add_name(name);
   builder_.add_position(position);
+  builder_.add_data_type(data_type);
   builder_.add_color(color);
   return builder_.Finish();
 }
@@ -283,7 +353,9 @@ inline ::flatbuffers::Offset<Parrot> CreateParrotDirect(
     const Parrot::Position *position = nullptr,
     const char *name = nullptr,
     Parrot::Color color = Parrot::Color::Red,
-    const std::vector<::flatbuffers::Offset<Parrot::Talent>> *talents = nullptr) {
+    const std::vector<::flatbuffers::Offset<Parrot::Talent>> *talents = nullptr,
+    Parrot::ParrotData data_type = Parrot::ParrotData::NONE,
+    ::flatbuffers::Offset<void> data = 0) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto talents__ = talents ? _fbb.CreateVector<::flatbuffers::Offset<Parrot::Talent>>(*talents) : 0;
   return Parrot::CreateParrot(
@@ -291,7 +363,34 @@ inline ::flatbuffers::Offset<Parrot> CreateParrotDirect(
       position,
       name__,
       color,
-      talents__);
+      talents__,
+      data_type,
+      data);
+}
+
+inline bool VerifyParrotData(::flatbuffers::Verifier &verifier, const void *obj, ParrotData type) {
+  switch (type) {
+    case ParrotData::NONE: {
+      return true;
+    }
+    case ParrotData::Talent: {
+      auto ptr = reinterpret_cast<const Parrot::Talent *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    default: return true;
+  }
+}
+
+inline bool VerifyParrotDataVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<ParrotData> *types) {
+  if (!values || !types) return !values && !types;
+  if (values->size() != types->size()) return false;
+  for (::flatbuffers::uoffset_t i = 0; i < values->size(); ++i) {
+    if (!VerifyParrotData(
+        verifier,  values->Get(i), types->GetEnum<ParrotData>(i))) {
+      return false;
+    }
+  }
+  return true;
 }
 
 inline const Parrot::Parrot *GetParrot(const void *buf) {
