@@ -155,18 +155,18 @@ Updated Parrot name: UpdatedPolly
 
 Specifically, `boost/asio.hpp`
 
-Download the boost library from https://www.boost.org/users/download/
+Download the boost library from https://www.boost.org/users/download/ if you do not have boost yet.
 
-and place it as a static library in the `lib` folder.
+We will use at least 1.58.0
 
-The static library is created in `lib/boost_1_81_0`
+we will not source control boost as a library in the `lib` folder, as its too large.
 
-We are doing this so that our users can just clone this repository and run the code, without changing `CMakeLists.txt` to include the path to their own boost library.
+Instead, we will setup the `CMakeLists.txt` file in abit, to find the boost libraries automatically in our system.
 
 **Step 2: Setup `CMakeLists.txt`**
 
 Specifically, to 
-- add the boost library as a static library to the project, and allow it to be included in our code
+- find the boost library on the user's system, and allow it to be included in our code
 - separate the source files and header files for qn 2 and 3 (server + client)
 - set separate executables for qn 2 and 3 (server + client)
 
@@ -178,9 +178,6 @@ cmake_minimum_required(VERSION 3.10)
 project(CryptoDotComAssignment)
 
 set(CMAKE_CXX_STANDARD 17)
-
-# New: Set the path to the boost library
-set(BOOST_ROOT /lib/boost/boost_1_81_0)
 
 # New: separate the source files and header files for qn 2
 set(QN_2_SOURCE_FILES qn_2_read_and_update_parrot.cpp)
@@ -199,10 +196,13 @@ include_directories(generated_parrot)
 # Add the Flatbuffers directory to the CMake build
 add_subdirectory(lib/flatbuffers)
 
+# Force using static libraries - this embeds the boost code directly into the executable
+set(Boost_USE_STATIC_LIBS ON)
+
 # New: Add the boost directory to the CMake build
 # Boost.Asio is a header-only library; we don't need to build it separately here, and only need to build the dependencies it needs
 # Boost.System library is needed as a dependency for Boost.Asio
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost 1.58.0 COMPONENTS system REQUIRED)
 
 # New: Include the boost library, so we can include the boost headers in our code
 include_directories(${Boost_INCLUDE_DIRS})
