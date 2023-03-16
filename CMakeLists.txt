@@ -4,8 +4,16 @@ project(CryptoDotComAssignment)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCE_FILES qn_2_read_and_update_parrot.cpp)
-set(HEADER_FILES qn_2_read_and_update_parrot.h)
+set(BOOST_ROOT /lib/boost/boost_1_81_0)
+
+set(QN_2_SOURCE_FILES qn_2_read_and_update_parrot.cpp)
+set(QN_2_HEADER_FILES qn_2_read_and_update_parrot.h)
+
+set(QN_3_SERVER_SOURCE_FILES qn_3_server_socket.cpp)
+set(QN_3_SERVER_HEADER_FILES qn_3_server_socket.h)
+
+set(QN_3_CLIENT_SOURCE_FILES qn_3_client_socket.cpp)
+set(QN_3_CLIENT_HEADER_FILES qn_3_client_socket.h)
 
 # Include generated_parrot to be able to use the generated headers
 include_directories(generated_parrot)
@@ -13,8 +21,18 @@ include_directories(generated_parrot)
 # Add the Flatbuffers directory to the CMake build
 add_subdirectory(lib/flatbuffers)
 
-# Add the Flatbuffers directory to the CMake build
-add_executable(Question2 ${SOURCE_FILES} ${HEADER_FILES})
+# Boost.Asio is a header-only library; we don't need to build it separately here, and only need to build the dependencies it needs
+# Boost.System library is needed as a dependency for Boost.Asio
+find_package(Boost REQUIRED COMPONENTS system)
+include_directories(${Boost_INCLUDE_DIRS})
+
+add_executable(Question2 ${QN_2_SOURCE_FILES} ${QN_2_HEADER_FILES})
+add_executable(Question3Server ${QN_3_SERVER_SOURCE_FILES} ${QN_3_SERVER_HEADER_FILES})
+add_executable(Question3Client ${QN_3_CLIENT_SOURCE_FILES} ${QN_3_CLIENT_HEADER_FILES})
 
 # Link the Flatbuffers static library only to the target
 target_link_libraries(Question2 PRIVATE flatbuffers)
+
+# Link the Flatbuffers static library only to the target
+target_link_libraries(Question3Server PRIVATE flatbuffers ${Boost_LIBRARIES})
+target_link_libraries(Question3Client PRIVATE flatbuffers ${Boost_LIBRARIES})

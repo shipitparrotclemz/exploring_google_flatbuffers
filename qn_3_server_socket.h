@@ -1,0 +1,14 @@
+//
+// Created by Goh Chang Ming Clement on 3/16/23.
+//
+
+#ifndef CRYPTODOTCOMASSIGNMENT_QN_3_SENDING_THE_PARROT_OVER_TCP_SOCKET_H
+#define CRYPTODOTCOMASSIGNMENT_QN_3_SENDING_THE_PARROT_OVER_TCP_SOCKET_H
+
+
+class qn_3_sending_the_parrot_over_tcp_socket {
+
+};
+
+
+#endif //CRYPTODOTCOMASSIGNMENT_QN_3_SENDING_THE_PARROT_OVER_TCP_SOCKET_H
