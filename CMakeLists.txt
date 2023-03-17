@@ -15,6 +15,12 @@ set(QN_3_SERVER_HEADER_FILES qn_3_server_socket.h)
 set(QN_3_CLIENT_SOURCE_FILES qn_3_client_socket.cpp)
 set(QN_3_CLIENT_HEADER_FILES qn_3_client_socket.h)
 
+set(QN_4_SERVER_SOURCE_FILES qn_4_server_socket.cpp)
+set(QN_4_SERVER_HEADER_FILES qn_4_server_socket.h)
+
+set(QN_4_CLIENT_SOURCE_FILES qn_4_client_socket.cpp)
+set(QN_4_CLIENT_HEADER_FILES qn_4_client_socket.h)
+
 # Include generated_parrot to be able to use the generated headers
 include_directories(generated_parrot)
 
@@ -39,9 +45,17 @@ add_executable(Question2 ${QN_2_SOURCE_FILES} ${QN_2_HEADER_FILES})
 add_executable(Question3Server ${QN_3_SERVER_SOURCE_FILES} ${QN_3_SERVER_HEADER_FILES})
 add_executable(Question3Client ${QN_3_CLIENT_SOURCE_FILES} ${QN_3_CLIENT_HEADER_FILES})
 
+# Add the executable for Question 4
+add_executable(Question4Server ${QN_4_SERVER_SOURCE_FILES} ${QN_4_SERVER_HEADER_FILES})
+add_executable(Question4Client ${QN_4_CLIENT_SOURCE_FILES} ${QN_4_CLIENT_HEADER_FILES})
+
 # Link the flatbuffers static library only to the target
 target_link_libraries(Question2 PRIVATE flatbuffers)
 
 # Link the boost library and flatbuffers static libraries to qn 3 server and client targets
 target_link_libraries(Question3Server PRIVATE flatbuffers ${Boost_LIBRARIES})
 target_link_libraries(Question3Client PRIVATE flatbuffers ${Boost_LIBRARIES})
+
+# Link the boost library and flatbuffers static libraries to qn 4 server and client targets
+target_link_libraries(Question4Server PRIVATE flatbuffers ${Boost_LIBRARIES})
+target_link_libraries(Question4Client PRIVATE flatbuffers ${Boost_LIBRARIES})

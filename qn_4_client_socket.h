@@ -1,0 +1,14 @@
+//
+// Created by Goh Chang Ming Clement on 3/18/23.
+//
+
+#ifndef CRYPTODOTCOMASSIGNMENT_QN_4_CLIENT_SOCKET_H
+#define CRYPTODOTCOMASSIGNMENT_QN_4_CLIENT_SOCKET_H
+
+
+class qn_4_client_socket {
+
+};
+
+
+#endif //CRYPTODOTCOMASSIGNMENT_QN_4_CLIENT_SOCKET_H
