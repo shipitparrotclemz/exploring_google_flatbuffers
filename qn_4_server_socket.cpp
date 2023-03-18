@@ -13,8 +13,8 @@
 using boost::asio::ip::tcp;
 using namespace ParrotSchema;
 
-const flatbuffers::Table &receive_flatbuffer(tcp::socket &socket, std::vector<uint8_t> &buffer);
-void print_parrot(const flatbuffers::Table &table, const reflection::Schema &schema);
+const Parrot &receive_flatbuffer(tcp::socket &socket, std::vector<uint8_t> &buffer);
+void print_parrot(const Parrot &parrot, const reflection::Schema &schema);
 
 int main() {
     // Initialize a Boost.Asio io_context
@@ -39,15 +39,15 @@ int main() {
 
     // Receive the FlatBuffer object
     std::vector<uint8_t> buffer;
-    const flatbuffers::Table &received_flatbuffer = receive_flatbuffer(socket, buffer);
+    const Parrot &received_parrot = receive_flatbuffer(socket, buffer);
 
     // Use the received FlatBuffer object (e.g., print its name and color)
-    print_parrot(received_flatbuffer, *schema);
+    print_parrot(received_parrot, *schema);
 
     return 0;
 }
 
-const flatbuffers::Table &receive_flatbuffer(tcp::socket &socket, std::vector<uint8_t> &buffer) {
+const Parrot &receive_flatbuffer(tcp::socket &socket, std::vector<uint8_t> &buffer) {
     // Read the size of the incoming FlatBuffer
     uint32_t size = 0;
     boost::asio::read(socket, boost::asio::buffer(&size, sizeof(size)));
@@ -59,13 +59,13 @@ const flatbuffers::Table &receive_flatbuffer(tcp::socket &socket, std::vector<ui
     boost::asio::read(socket, boost::asio::buffer(buffer.data(), size));
 
     // Deserialize the FlatBuffer object
-    const flatbuffers::Table *table = reinterpret_cast<const flatbuffers::Table *>(buffer.data());
+    const Parrot *parrot = flatbuffers::GetRoot<Parrot>(buffer.data());
 
-    // Return the received FlatBuffer object
-    return *table;
+    // Return the received Parrot object
+    return *parrot;
 }
 
-void print_parrot(const flatbuffers::Table &table, const reflection::Schema &schema) {
+void print_parrot(const Parrot &parrot, const reflection::Schema &schema) {
     // Get the root table of the schema
     const reflection::Object *root_table = schema.root_table();
 
@@ -73,28 +73,42 @@ void print_parrot(const flatbuffers::Table &table, const reflection::Schema &sch
     for (const auto *field : *root_table->fields()) {
         // Access the field's data using the reflection API
         reflection::BaseType elem_type = field->type()->base_type();
-        auto field_offset = field->offset();
         std::cout << field->name()->str() << ": ";
 
         // Print the field value based on its type
         switch (elem_type) {
             case reflection::BaseType::String: {
-                auto str = table.GetPointer<const flatbuffers::String *>(field_offset);
-                if (str) {
-                    std::cout << str->str();
-                } else {
-                    std::cout << "(null)";
+                if (strcmp(field->name()->c_str(), "name") == 0) {
+                    std::cout << parrot.name()->str();
                 }
                 break;
             }
             case reflection::BaseType::Byte: { // Assuming the enum is represented as a byte
-                auto enum_val = table.GetField<int8_t>(field_offset, 0);
-                auto enum_def = schema.enums()->Get(field->type()->index());
-                auto enum_name = enum_def->values()->LookupByKey(enum_val)->name();
-                std::cout << enum_name->str();
+                if (strcmp(field->name()->c_str(), "color") == 0) {
+                    std::cout << EnumNameColor(parrot.color());
+                }
                 break;
             }
-                // Add more cases for other types if necessary
+            case reflection::BaseType::Obj: {
+                if (strcmp(field->name()->c_str(), "position") == 0) {
+                    auto position = parrot.position();
+                    std::cout << "x: " << position->x() << ", y: " << position->y() << ", z: " << position->z();
+                } else if (strcmp(field->name()->c_str(), "talents") == 0) {
+                    auto talents_vec = parrot.talents();
+                    std::cout << "[";
+                    for (size_t i = 0; i < talents_vec->size(); ++i) {
+                        auto talent = talents_vec->Get(i);
+                        std::cout << "{name: " << talent->name()->str() << ", level: " << EnumNameLevel(talent->level()) << "}";
+                        if (i < talents_vec->size() - 1) {
+                            std::cout << ", ";
+                        }
+                    }
+                    std::cout << "]";
+                } else {
+                    std::cout << "(unsupported object)";
+                }
+                break;
+            }
             default:
                 std::cout << "(unsupported type)";
                 break;
