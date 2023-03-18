@@ -93,7 +93,13 @@ void print_parrot(const Parrot &parrot, const reflection::Schema &schema) {
                 if (strcmp(field->name()->c_str(), "position") == 0) {
                     auto position = parrot.position();
                     std::cout << "x: " << position->x() << ", y: " << position->y() << ", z: " << position->z();
-                } else if (strcmp(field->name()->c_str(), "talents") == 0) {
+                } else {
+                    std::cout << "(unsupported object)";
+                }
+                break;
+            }
+            case reflection::BaseType::Vector: {
+                if (strcmp(field->name()->c_str(), "talents") == 0) {
                     auto talents_vec = parrot.talents();
                     std::cout << "[";
                     for (size_t i = 0; i < talents_vec->size(); ++i) {
@@ -103,14 +109,12 @@ void print_parrot(const Parrot &parrot, const reflection::Schema &schema) {
                             std::cout << ", ";
                         }
                     }
-                    std::cout << "]";
-                } else {
-                    std::cout << "(unsupported object)";
+                    std::cout << "]" << std::endl;
                 }
                 break;
             }
             default:
-                std::cout << "(unsupported type)";
+                std::cout << "(unsupported type) for elem_type: " << elem_type << " and fieldName: " << field->name()->c_str() << std::endl;
                 break;
         }
         std::cout << std::endl;

@@ -30,13 +30,17 @@ int main() {
     // This is the position of the parrot in the 3D space, as a serialized buffer
     auto position = ParrotSchema::CreatePosition(builder, 1.0f, 2.0f, 3.0f);
 
-    // Create Talent, as a serialized buffer
-    auto talent_name = builder.CreateString("Talking");
-    auto talent = ParrotSchema::CreateTalent(builder, talent_name, ParrotSchema::Level_Two);
+    // Create a Talking Talent, as a serialized buffer
+    auto talking_talent_name = builder.CreateString("Talking");
+    auto talking_talent = ParrotSchema::CreateTalent(builder, talking_talent_name, ParrotSchema::Level_Two);
+
+    // Create a Singing Talent, as a serialized buffer
+    auto singing_talent_name = builder.CreateString("Singing");
+    auto singing_talent = ParrotSchema::CreateTalent(builder, singing_talent_name, ParrotSchema::Level_Three);
 
     // Create Parrot, as a serialized buffer
     auto parrot_name = builder.CreateString("Polly");
-    auto talents_vector = builder.CreateVector(std::vector<flatbuffers::Offset<ParrotSchema::Talent>>({talent}));
+    auto talents_vector = builder.CreateVector(std::vector<flatbuffers::Offset<ParrotSchema::Talent>>({talking_talent, singing_talent}));
     auto parrot = ParrotSchema::CreateParrot(builder, position, parrot_name, ParrotSchema::Color_Red, talents_vector);
 
     // Finish the buffer

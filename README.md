@@ -425,9 +425,10 @@ Client
 Server
 
 ```sh
-➜  build git:(master) ✗ ./Question4Server              
+➜  build git:(master) ✗ ./Question4Server
 color: Red
 name: Polly
 position: x: 1, y: 2, z: 3
-talents: (unsupported type)
+talents: [{name: Talking, level: Two}, {name: Singing, level: Three}]
+
 ```
