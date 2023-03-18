@@ -1,0 +1,14 @@
+//
+// Created by Goh Chang Ming Clement on 3/19/23.
+//
+
+#ifndef CRYPTODOTCOMASSIGNMENT_QN_5_PUBLISHER_SENDER_H
+#define CRYPTODOTCOMASSIGNMENT_QN_5_PUBLISHER_SENDER_H
+
+
+class qn_5_publisher_sender {
+
+};
+
+
+#endif //CRYPTODOTCOMASSIGNMENT_QN_5_PUBLISHER_SENDER_H

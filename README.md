@@ -453,3 +453,53 @@ Iterating fields for index 1:
 Field name: level, type: 3
 [1]    83420 segmentation fault  ./Question4Server
 ```
+
+## Question 5: Consider the property tree will be updated frequently by the sender, think of a solution that synchronize the updates to the receiver.
+
+To synchronize updates between the sender and the receiver, you can use a publish-subscribe pattern. 
+
+The sender is the publisher, and the receiver will be the subscriber. 
+
+The publisher will send updates to all subscribers whenever there is a change in the property tree. 
+
+Here's a high-level overview of the suggested approach:
+
+1. Implement a message protocol to handle different types of messages, such as subscribing, unsubscribing, and property tree updates.
+
+2. Modify the sender (publisher) to maintain a list of connected subscribers and send updates to all subscribers whenever the property tree is updated.
+
+3. Modify the receiver (subscriber) to send a subscription request to the publisher when it connects and handle incoming updates from the publisher.
+
+Here's a basic example using Boost.Asio for networking and Flatbuffers for serialization:
+
+**Publisher (sender):**
+
+1. Listen for incoming connections from subscribers.
+2. When a new subscriber connects, add it to the list of subscribers.
+3. When the property tree is updated, serialize the updated data using Flatbuffers and send it to all subscribers.
+
+**Subscriber (receiver):**
+
+1. Connect to the publisher.
+2. Send a subscription request to the publisher.
+3. Continuously listen for incoming updates from the publisher and update the local property tree accordingly.
+
+This approach ensures that the receiver's property tree is synchronized with the sender's property tree whenever there are updates.
+
+The partial pseudo code is added into `qn_5_publisher_sender.cpp` and `qn_5_susbcriber_receiver.cpp` files.
+
+## Reflections
+
+It was my first time using Flatbuffers, and loved how there are so many specific optimizations flatbuffers have.
+
+For example, it was cool that flatbuffers was implemented such that we can access serialized fields directly without parsing / deserializing the entire buffer.
+
+That said, i was a bit disappointed that the flatbuffers' examples on specifically reflection ain't too great.
+
+I admittedly had to use ChatGPT and unofficial `flatbuffers` reflection documentation to figure things out.
+
+Also, it was disappointing that the reflections API tends to infer the incorrect type; specifically the enum type as a byte.
+
+(I would bet it was just me, and that the reflections API could have inferred that correctly)
+
+Thank you so much for vetting my assignment, and hope I would get a chance to work with the team!

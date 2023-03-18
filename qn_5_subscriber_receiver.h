@@ -1,0 +1,14 @@
+//
+// Created by Goh Chang Ming Clement on 3/19/23.
+//
+
+#ifndef CRYPTODOTCOMASSIGNMENT_QN_5_SYNCHRONIZING_UPDATES_H
+#define CRYPTODOTCOMASSIGNMENT_QN_5_SYNCHRONIZING_UPDATES_H
+
+
+class qn_5_synchronizing_updates {
+
+};
+
+
+#endif //CRYPTODOTCOMASSIGNMENT_QN_5_SYNCHRONIZING_UPDATES_H

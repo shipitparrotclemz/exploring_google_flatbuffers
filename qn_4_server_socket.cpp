@@ -176,17 +176,25 @@ void iterate_fields(const flatbuffers::Table *table, const reflection::Object *o
                         case reflection::BaseType::Bool:
                         case reflection::BaseType::UByte: {
                             auto vec = table->GetPointer<const flatbuffers::Vector<uint8_t> *>(field->offset());
-                            std::cout << "size: " << vec->size() << std::endl;
-                            for (size_t i = 0; i < vec->size(); ++i) {
-                                std::cout << "Value at index " << i << ": " << static_cast<unsigned int>(vec->Get(i)) << std::endl;
+                            if (vec) {
+                                std::cout << "size: " << vec->size() << std::endl;
+                                for (size_t i = 0; i < vec->size(); ++i) {
+                                    std::cout << "Value at index " << i << ": " << static_cast<unsigned int>(vec->Get(i)) << std::endl;
+                                }
+                            } else {
+                                std::cout << "Null vector value" << std::endl;
                             }
                             break;
                         }
                         case reflection::BaseType::Byte: {
                             auto vec = table->GetPointer<const flatbuffers::Vector<uint8_t> *>(field->offset());
-                            std::cout << "size: " << vec->size() << std::endl;
-                            for (size_t i = 0; i < vec->size(); ++i) {
-                                std::cout << "Value at index " << i << ": " << static_cast<int>(vec->Get(i)) << std::endl;
+                            if (vec) {
+                                std::cout << "size: " << vec->size() << std::endl;
+                                for (size_t i = 0; i < vec->size(); ++i) {
+                                    std::cout << "Value at index " << i << ": " << static_cast<int>(vec->Get(i)) << std::endl;
+                                }
+                            } else {
+                                std::cout << "Null vector value" << std::endl;
                             }
                             break;
                         }
