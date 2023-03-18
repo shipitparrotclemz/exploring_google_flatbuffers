@@ -8,10 +8,6 @@
 #include "parrot_generated.h"
 
 using boost::asio::ip::tcp;
-
-// TODO: Abstract the methods to create a flatbuffer parrot object, and update a flatbuffer parrot object
-// Use the abstracted methods here instead
-
 using boost::asio::ip::tcp;
 
 void send_parrot(tcp::socket &socket, const std::vector<uint8_t> &buffer);

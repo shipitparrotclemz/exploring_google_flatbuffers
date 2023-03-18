@@ -426,9 +426,30 @@ Server
 
 ```sh
 ➜  build git:(master) ✗ ./Question4Server
-color: Red
-name: Polly
-position: x: 1, y: 2, z: 3
-talents: [{name: Talking, level: Two}, {name: Singing, level: Three}]
+Field name: color, type: 3
+Byte: 0
+Field name: name, type: 13
+String value: Polly
+Field name: position, type: 15
+Field name: x, type: 11
+Float: 1
+Field name: y, type: 11
+Float: 2
+Field name: z, type: 11
+Float: 3
+Field name: talents, type: 14
+Vector size: 2
+Table at index 0:
+Iterating fields for index 0:
+Field name: level, type: 3
+Byte: 0
+Field name: name, type: 13
+Null string value
 
+// Yes, got a segfault :') 
+// I couldn't figure out why yet, but the inferred type for the enum was erroneously assigned to be a byte
+Table at index 1:
+Iterating fields for index 1:
+Field name: level, type: 3
+[1]    83420 segmentation fault  ./Question4Server
 ```
