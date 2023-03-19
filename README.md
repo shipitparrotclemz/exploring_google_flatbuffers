@@ -1,17 +1,13 @@
-# Crypto.com Assignment with Google FlatBuffers
+# Exploring Google FlatBuffers
 
-Hi! Thank you for vetting through my thoughts and submissions!
-
-This README.md details my thought process, and hopefully makes it easy for you to vet this easier!
+Hi! In this repository, we explore the serialization library, Google FlatBuffers.
 
 ## Q: What is Google FlatBuffers?
 
-A: This was my first time being exposed to Google FlatBuffers, so I had to bite the bullet and read the documentation to get a gist of things.
+FlatBuffers is a serialization library.
 
 **FlatBuffers - Overview**
 https://google.github.io/flatbuffers/index.html#flatbuffers_overview
-
-And I realized that FlatBuffers is a serialization library.
 
 However, we might ask:
 
